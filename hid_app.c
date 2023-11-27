@@ -276,8 +276,12 @@ void process_sony_ds4(uint8_t const* report, uint16_t len)
 
     // TODO Push report to UART --> 8 bits? 16 bits? full report?
     if (uart_is_writable(UART_ID)) {
-      // TODO Convert report? Map 8-directions d-pad to 4-directions d-pad?
-      uint8_t uart_report = (ds4_report.option << 7) | (ds4_report.share << 6) | (ds4_report.circle << 5) | (ds4_report.cross << 4);
+      bool north = (ds4_report.dpad == 0x0) || (ds4_report.dpad == 0x1) || (ds4_report.dpad == 0x7);
+      bool east = (ds4_report.dpad == 0x1) || (ds4_report.dpad == 0x2) || (ds4_report.dpad == 0x3);
+      bool south = (ds4_report.dpad == 0x3) || (ds4_report.dpad == 0x4) || (ds4_report.dpad == 0x5);
+      bool west = (ds4_report.dpad == 0x5) || (ds4_report.dpad == 0x6) || (ds4_report.dpad == 0x7);
+      uint8_t uart_report = (ds4_report.option << 7) | (ds4_report.share << 6) | (ds4_report.circle << 5) | (ds4_report.cross << 4)
+                          | (north << 3) | (east << 2) | (south << 1) | west;
       uart_write_blocking(UART_ID, &uart_report, 1);
     }
   }
