@@ -29,6 +29,9 @@
 
 #include "bsp/board.h"
 #include "tusb.h"
+#include "main.h"
+#include "hardware/uart.h"
+#include "hardware/gpio.h"
 
 //--------------------------------------------------------------------+
 // MACRO CONSTANT TYPEDEF PROTYPES
@@ -45,6 +48,13 @@ int main(void)
   printf("TinyUSB Host HID Example WITH CONTROLLER SUPPORT pushing TO\r\n");
 
   tusb_init();
+
+  uart_init(UART_ID, BAUD_RATE);
+  gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
+  gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
+
+  // TODO Setup DMA to write report to UART
+
 
   while (1)
   {

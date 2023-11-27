@@ -25,6 +25,7 @@
 
 #include "bsp/board.h"
 #include "tusb.h"
+#include "main.h"
 
 
 
@@ -296,6 +297,11 @@ void process_sony_ds4(uint8_t const* report, uint16_t len)
     prev_report = ds4_report;
 
     // TODO Push report to UART --> 8 bits? 16 bits? full report?
+    if (uart_is_writable(UART_ID)) {
+      // TODO Convert report? Map 8-directions d-pad to 4-directions d-pad?
+      uint8_t uart_report = (ds4_report.option << 7) | (ds4_report.share << 6) | (ds4_report.circle << 5) | (ds4_report.cross << 4);
+      uart_write_blocking(UART_ID, &uart_report, 1);
+    }
   }
 }
 
